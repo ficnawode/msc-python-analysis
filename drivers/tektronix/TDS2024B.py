@@ -77,9 +77,10 @@ class TDS2024B:
 
         header_length = int(raw_data[1])  
         waveform_data = raw_data[2 + header_length:-1]  
-        data_points = np.array(struct.unpack(f"{len(waveform_data)}B", waveform_data))
+        data_points = np.array(struct.unpack(f"{len(waveform_data)}b", waveform_data))
 
         voltages = (data_points - y_offset) * y_multiplier + y_zero
+        # voltages = data_points
         time_values = np.arange(0, len(voltages)) * x_increment + x_origin
 
         df = pd.DataFrame({"t": time_values, "V": voltages})
@@ -90,9 +91,9 @@ if __name__ == '__main__':
     # Open serial connection
     tds = TDS2024B("USB0::0x0699::0x036A::C100158::INSTR", debug=False)
     print(tds.query_idn())
-    print(tds.query_Vp2p(2))
-    print(tds.query_Vrms(2))
-    df = tds.query_Waveform(2)
+    print(tds.query_Vp2p(1))
+    print(tds.query_Vrms(1))
+    df = tds.query_Waveform(1)
     plt.plot(df["t"], df["V"])
     plt.show()
 
