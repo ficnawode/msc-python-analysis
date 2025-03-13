@@ -4,6 +4,9 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 import struct
+from PIL import Image
+import io
+
 
 class TDS2024B:
     def __init__(self, device_id, debug=False, visa_backend=r"C:/Windows/System32/visa64.dll"):
@@ -32,7 +35,7 @@ class TDS2024B:
         if channel not in [1, 2, 3, 4]:
             print("Error: Invalid channel number")
             return None
-        command = f"MEASUrement:IMMed:SOUrce CH1"
+        command = f"MEASUrement:IMMed:SOUrce CH{channel}"
         self.write(command)
 
     def select_data_channel(self, channel):
@@ -85,6 +88,21 @@ class TDS2024B:
 
         df = pd.DataFrame({"t": time_values, "V": voltages})
         return df
+    
+    def save_screenshot(self, save_path=None, format = 'JPEG'):
+        self.write("HARDCOPY:FORMAT PNG")
+
+        self.handle.timeout = 20000
+        self.write("HARDCOPY START")
+        image_data = self.handle.read_raw()
+        self.handle.timeout = 2000
+
+        if save_path is not None:
+            bmp_image = Image.open(io.BytesIO(image_data))
+            jpg_path = "scope_image.jpg"
+            bmp_image.convert("RGB").save(save_path, "JPEG",  quality=100, optimize=True, subsampling=0)
+            print(f"Image saved as {save_path}")
+
 
 
 if __name__ == '__main__':
