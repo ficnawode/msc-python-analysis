@@ -5,7 +5,6 @@ import h5py
 import pandas as pd
 
 SAVE_WAVEFORMS = False
-
 time_stamps = []
 
 v_p2ps= []
