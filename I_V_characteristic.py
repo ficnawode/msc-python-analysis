@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 import pandas as pd
 
-SERIAL_PORT = 'COM5'  # Change as needed
+SERIAL_PORT = 'COM6'  # Change as needed
 
 
 voltages = []
@@ -36,7 +36,7 @@ ax = [
 # fig, ax = plt.subplots( nrows=1, ncols=2 )  # create figure & 1 axis
 
 
-def update_plot():
+def update_plot(delay_time_s=2):
     voltage = hv.queryVMON(3)
     # print(voltage)
     current = hv.queryIMON(3)
@@ -93,8 +93,7 @@ time.sleep(8)
 # plt.show()
 for v in tqdm(range(start_voltage, end_voltage, delta_voltage)):
     hv.setVSET(3, v)
-    time.sleep(2)
-    update_plot()
+    update_plot(delay_time_s=2)
 
 hv.setCHOff(3)
 
@@ -108,5 +107,6 @@ df = pd.DataFrame(
      'v_p2p_ch2': v_p2ps_ch2,
      'v_rms_ch2': v_rmss_ch2})
 
-df.to_csv(f'analysis/data/dark_pmt/I_V_noise_{start_voltage}_{end_voltage}V.csv', index=False)
+file_timestamp = time.strftime("%Y%m%d-%H%M%S")
+df.to_csv(f'analysis/data/dark_pmt/pmt2/I_V_noise_{start_voltage}_{end_voltage}V_{file_timestamp}.csv', index=False)
 plt.show()

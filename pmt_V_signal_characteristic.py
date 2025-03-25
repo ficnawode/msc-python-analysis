@@ -8,7 +8,7 @@ from tqdm import tqdm
 import pandas as pd
 import h5py
 
-SERIAL_PORT = 'COM5'  # Change as needed
+SERIAL_PORT = 'COM6'  # Change as needed
 
 
 voltages = []
@@ -69,7 +69,7 @@ time.sleep(8)
 # Example usage: Vary voltage from 1V to 5V
 # plt.show()
 timestamp = time.strftime("%Y%m%d-%H%M%S")
-with h5py.File(f'analysis/data/gain_fixed_light/signals_{timestamp}.h5', 'w') as f:
+with h5py.File(f'analysis/data/gain_fixed_light/pmt1/signals_{timestamp}.h5', 'w') as f:
     for v in tqdm(range(start_voltage, end_voltage, delta_voltage)):
         hv.setVSET(3, v)
         time.sleep(2)
@@ -89,7 +89,7 @@ with h5py.File(f'analysis/data/gain_fixed_light/signals_{timestamp}.h5', 'w') as
         for i, sig in enumerate(sigs_ch2):
             f[str(v)]['CH2'].create_dataset(f'{i}', data=sig)
         
-        update_plot(sigs_ch1, sigs_ch2)
+        # update_plot(sigs_ch1, sigs_ch2)
 
 hv.setCHOff(3)
 plt.show()
